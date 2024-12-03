@@ -1,0 +1,30 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index/index", // 用户提交页面
+			"style": {
+				"navigationBarTitleText": "收货信息填写" // 设置页面标题
+			}
+		},
+		{
+			"path": "pages/admin/admin", // 管理员查看数据页面
+			"style": {
+				"navigationBarTitleText": "发货信息统计" // 设置页面标题
+			}
+		},
+		{
+			"path": "pages/submitSuccess/submitSuccess", // 管理员查看数据页面
+			"style": {
+				"navigationBarTitleText": "填写成功" // 设置页面标题
+			}
+		}
+	],
+],
+"globalStyle": {
+	"navigationBarTextStyle": "black",
+	"navigationBarTitleText": "锯妹",
+	"navigationBarBackgroundColor": "#F8F8F8",
+	"backgroundColor": "#F8F8F8"
+},
+"uniIdRouter": {}
+}

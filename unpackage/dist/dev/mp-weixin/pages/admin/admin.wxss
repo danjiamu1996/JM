@@ -1,0 +1,118 @@
+
+button.data-v-dbc77958 {
+		padding: 0 24rpx !important;
+}
+.container.data-v-dbc77958 {
+		padding: 40rpx;
+		background-color: #FFFFFF;
+}
+.date-section.data-v-dbc77958 {
+		margin-bottom: 60rpx;
+}
+.date-header.data-v-dbc77958 {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 20rpx;
+}
+.date-title.data-v-dbc77958 {
+		font-size: 36rpx;
+		font-weight: bold;
+		color: #333333;
+}
+.copy-all.data-v-dbc77958 {
+		background-color: #63b166;
+		color: white;
+		padding: 16rpx 32rpx;
+		border-radius: 10rpx;
+		font-size: 28rpx;
+		cursor: pointer;
+}
+.copy-order.data-v-dbc77958,
+	.delete-order.data-v-dbc77958 {
+		background-color: #888;
+		color: white;
+		padding: 12rpx 24rpx;
+		font-size: 24rpx;
+		border-radius: 10rpx;
+		cursor: pointer;
+}
+.delete-order.data-v-dbc77958 {
+		background-color: #FF6F61;
+}
+.order-item.data-v-dbc77958 {
+		position: relative;
+		padding: 40rpx;
+		background-color: #F7F7F7;
+		border-radius: 16rpx;
+		box-shadow: 0px 4rpx 10rpx rgba(0, 0, 0, 0.1);
+		margin-bottom: 20rpx;
+}
+.order-update.data-v-dbc77958 {
+		position: absolute;
+		right: 20rpx;
+		top: 16rpx;
+		background: #c2bc0a;
+		color: #fff;
+		padding: 6rpx 10rpx;
+		border-radius: 12rpx;
+		font-size: 24rpx;
+}
+.order-details.data-v-dbc77958 {
+		margin-bottom: 20rpx;
+}
+.order-details text.data-v-dbc77958 {
+		display: block;
+		margin-bottom: 10rpx;
+		color: #555555;
+}
+.order-actions.data-v-dbc77958 {
+		margin-top: 20rpx;
+		display: flex;
+		justify-content: flex-end;
+}
+button.data-v-dbc77958 {
+		border: none;
+		outline: none;
+}
+.password-dialog.data-v-dbc77958 {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: rgba(0, 0, 0, 0.5);
+		display: flex;
+		justify-content: center;
+		align-items: center;
+}
+.password-box.data-v-dbc77958 {
+		background-color: #ffffff;
+		padding: 60rpx;
+		border-radius: 16rpx;
+		box-shadow: 0 0 20rpx rgba(0, 0, 0, 0.2);
+		text-align: center;
+		width: 80%;
+		max-width: 600rpx;
+}
+.password-input.data-v-dbc77958 {
+		width: 92%;
+		padding: 20rpx;
+		margin-bottom: 40rpx;
+		font-size: 36rpx;
+		border: 2rpx solid #ccc;
+		border-radius: 10rpx;
+}
+.confirm-btn.data-v-dbc77958 {
+		width: 100%;
+		padding: 20rpx;
+		background-color: #63b166;
+		color: white;
+		border: none;
+		border-radius: 10rpx;
+		font-size: 32rpx;
+		cursor: pointer;
+}
+.confirm-btn.data-v-dbc77958:hover {
+		background-color: #4a9c4e;
+}

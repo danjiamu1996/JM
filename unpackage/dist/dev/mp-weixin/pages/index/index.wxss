@@ -1,0 +1,20 @@
+
+.container.data-v-1cf27b2a {
+		padding: 40rpx;
+}
+.form-item.data-v-1cf27b2a {
+		margin-bottom: 40rpx;
+}
+button.data-v-1cf27b2a {
+		background-color: #007AFF;
+		color: white;
+		padding: 20rpx;
+		border-radius: 10rpx;
+}
+.picker-btn.data-v-1cf27b2a {
+		padding: 20rpx;
+		border: 2rpx solid #ccc;
+		border-radius: 10rpx;
+		text-align: center;
+		color: #333;
+}

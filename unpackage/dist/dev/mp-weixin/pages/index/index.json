@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "收货信息填写",
+  "usingComponents": {
+    "city-picker": "../../uni_modules/piaoyi-cityPicker/components/piaoyi-cityPicker/piaoyi-cityPicker"
+  }
+}

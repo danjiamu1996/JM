@@ -1,0 +1,16 @@
+
+.container.data-v-5f07f0f0 {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 100%;
+		flex-direction: column;
+}
+.icon-container.data-v-5f07f0f0 {
+		margin-bottom: 20px;
+}
+.message.data-v-5f07f0f0 {
+		font-size: 24px;
+		color: #4CAF50;
+		font-weight: bold;
+}
