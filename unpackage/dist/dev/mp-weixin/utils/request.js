@@ -1,9 +1,6 @@
 "use strict";
 const common_vendor = require("../common/vendor.js");
-let BASE_URL;
-{
-  BASE_URL = "http://127.0.0.1:3000";
-}
+const BASE_URL = "https://www.jumei.cyou";
 const request = (options) => {
   return new Promise((resolve, reject) => {
     common_vendor.index.request({
@@ -14,7 +11,8 @@ const request = (options) => {
       data: options.data || {},
       // 支持动态传递请求体数据
       header: options.header || {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Authorization": "Bearer JM888"
       },
       success: (res) => {
         if (res.statusCode === 200) {

@@ -217,7 +217,20 @@
 					}
 				});
 			}
-		}
+		},
+		// 分享至微信好友
+		onShareAppMessage: function() {
+			return {
+				title: '锯妹-订单管理', // 分享给朋友时显示的标题
+				path: '/pages/admin/admin', // 分享的路径
+				success: function(res) {
+					console.log('分享成功:', res);
+				},
+				fail: function(res) {
+					console.log('分享失败:', res);
+				}
+			};
+		},
 	};
 </script>
 

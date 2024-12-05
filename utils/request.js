@@ -1,11 +1,4 @@
-// utils/request.js
-
-let BASE_URL // 可以根据环境变化配置为不同的域名或 IP
-if (process.env.NODE_ENV === 'development') {
-	BASE_URL = 'http://127.0.0.1:3000'; // 开发环境
-} else if (process.env.NODE_ENV === 'production') {
-	BASE_URL = 'https://api.yourdomain.com'; // 生产环境
-}
+const BASE_URL = 'https://www.jumei.cyou'
 // 封装请求函数
 export const request = (options) => {
 	return new Promise((resolve, reject) => {
@@ -14,7 +7,8 @@ export const request = (options) => {
 			method: options.method || 'GET', // 支持 GET, POST, DELETE 等方法
 			data: options.data || {}, // 支持动态传递请求体数据
 			header: options.header || {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
+				'Authorization': 'Bearer JM888'
 			},
 			success: (res) => {
 				if (res.statusCode === 200) {

@@ -149,7 +149,7 @@
 					}, 1500)
 				} catch (error) {
 					uni.showToast({
-						title: `${address}${detailAddress}`,
+						title: `网络请求失败`,
 						icon: 'none'
 					});
 				}

@@ -95,7 +95,7 @@ const _sfc_main = {
         }, 1500);
       } catch (error) {
         common_vendor.index.showToast({
-          title: `${address}${detailAddress}`,
+          title: `网络请求失败`,
           icon: "none"
         });
       }

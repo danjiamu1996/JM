@@ -19,12 +19,11 @@
 			}
 		}
 	],
-],
-"globalStyle": {
-	"navigationBarTextStyle": "black",
-	"navigationBarTitleText": "锯妹",
-	"navigationBarBackgroundColor": "#F8F8F8",
-	"backgroundColor": "#F8F8F8"
-},
-"uniIdRouter": {}
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "锯妹",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	},
+	"uniIdRouter": {}
 }

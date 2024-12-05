@@ -159,6 +159,21 @@ const _sfc_main = {
         }
       });
     }
+  },
+  // 分享至微信好友
+  onShareAppMessage: function() {
+    return {
+      title: "锯妹-订单管理",
+      // 分享给朋友时显示的标题
+      path: "/pages/admin/admin",
+      // 分享的路径
+      success: function(res) {
+        console.log("分享成功:", res);
+      },
+      fail: function(res) {
+        console.log("分享失败:", res);
+      }
+    };
   }
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
@@ -194,4 +209,5 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   } : {});
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-dbc77958"]]);
+_sfc_main.__runtimeHooks = 2;
 wx.createPage(MiniProgramPage);
