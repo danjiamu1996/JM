@@ -2,9 +2,88 @@
 button.data-v-dbc77958 {
 		padding: 0 24rpx !important;
 }
+input.data-v-dbc77958 {
+		width: auto !important;
+}
+textarea.data-v-dbc77958 {
+		width: auto !important;
+}
 .container.data-v-dbc77958 {
 		padding: 40rpx;
 		background-color: #FFFFFF;
+		box-sizing: border-box;
+}
+.edit-dialog.data-v-dbc77958 {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: rgba(0, 0, 0, 0.5);
+		display: flex;
+		justify-content: center;
+		align-items: center;
+}
+.edit-dialog-box.data-v-dbc77958 {
+		width: 80%;
+		max-width: 600px;
+		background: #fff;
+		border-radius: 12rpx;
+		padding: 40rpx;
+		box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.2);
+}
+.edit-dialog-header.data-v-dbc77958 {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 20rpx;
+}
+.close-btn.data-v-dbc77958 {
+		background: none;
+		border: none;
+		font-size: 24rpx;
+		color: #999;
+		cursor: pointer;
+}
+.edit-dialog-content label.data-v-dbc77958 {
+		display: block;
+		margin-bottom: 10rpx;
+		font-size: 28rpx;
+		color: #555;
+}
+.edit-dialog-content input.data-v-dbc77958,
+	.edit-dialog-content textarea.data-v-dbc77958 {
+		width: 100%;
+		margin-bottom: 20rpx;
+		padding: 12rpx;
+		border: 1rpx solid #ccc;
+		border-radius: 8rpx;
+		font-size: 28rpx;
+}
+.edit-dialog-footer.data-v-dbc77958 {
+		display: flex;
+		justify-content: flex-end;
+		gap: 20rpx;
+}
+.bottom-tip.data-v-dbc77958 {
+		display: flex;
+		justify-content: center;
+}
+.confirm.data-v-dbc77958 {
+		background-color: #63b166;
+		color: white;
+		padding: 12rpx 24rpx;
+		font-size: 24rpx;
+		border-radius: 10rpx;
+		cursor: pointer;
+}
+.cancel.data-v-dbc77958 {
+		background-color: #888;
+		color: white;
+		padding: 12rpx 24rpx;
+		font-size: 24rpx;
+		border-radius: 10rpx;
+		cursor: pointer;
 }
 .date-section.data-v-dbc77958 {
 		margin-bottom: 60rpx;
@@ -29,13 +108,17 @@ button.data-v-dbc77958 {
 		cursor: pointer;
 }
 .copy-order.data-v-dbc77958,
-	.delete-order.data-v-dbc77958 {
+	.delete-order.data-v-dbc77958,
+	.edit-order.data-v-dbc77958 {
 		background-color: #888;
 		color: white;
 		padding: 12rpx 24rpx;
 		font-size: 24rpx;
 		border-radius: 10rpx;
 		cursor: pointer;
+}
+.edit-order.data-v-dbc77958 {
+		background-color: #FFA500;
 }
 .delete-order.data-v-dbc77958 {
 		background-color: #FF6F61;

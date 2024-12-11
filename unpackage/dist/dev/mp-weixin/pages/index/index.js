@@ -1,6 +1,7 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
 const utils_request = require("../../utils/request.js");
+const common_assets = require("../../common/assets.js");
 const cityPicker = () => "../../uni_modules/piaoyi-cityPicker/components/piaoyi-cityPicker/piaoyi-cityPicker.js";
 const _sfc_main = {
   components: {
@@ -13,24 +14,33 @@ const _sfc_main = {
         phone: "",
         address: "山西省运城市临猗县",
         detailAddress: "",
-        remark: ""
+        remark: "",
+        amount: null
       },
       visible: false,
       maskCloseAble: true,
       defaultValue: "140821",
-      column: 3
+      column: 3,
+      isShowWX: true,
+      loading: true
     };
   },
   methods: {
     // 提交表单
     async onSubmit(e) {
       e.preventDefault();
+      if (this.isShowWX) {
+        this.form.phone = "11122223333";
+        this.form.detailAddress = "true";
+        this.form.remark = "true";
+      }
       const {
         name,
         phone,
         address,
         detailAddress,
-        remark
+        remark,
+        amount
       } = this.form;
       const trimmedPhone = phone.trim();
       if (!name) {
@@ -69,6 +79,13 @@ const _sfc_main = {
         });
         return;
       }
+      if (!amount) {
+        common_vendor.index.showToast({
+          title: "付款金额不能为空",
+          icon: "none"
+        });
+        return;
+      }
       if (!remark) {
         common_vendor.index.showToast({
           title: "备注不能为空",
@@ -81,7 +98,8 @@ const _sfc_main = {
           name,
           phone,
           address: `${address}${detailAddress}`,
-          remark
+          remark,
+          amount
         });
         common_vendor.index.showToast({
           title: "提交成功",
@@ -111,6 +129,27 @@ const _sfc_main = {
       this.visible = false;
     }
   },
+  async onLoad() {
+    try {
+      const res = await utils_request.get("/ui-status");
+      this.isShowWX = res.data.isUIEnabled;
+      if (this.isShowWX == false) {
+        common_vendor.index.setNavigationBarTitle({
+          title: "收货信息填写"
+        });
+      }
+      this.loading = false;
+    } catch (error) {
+      this.isShowWX = true;
+      this.loading = false;
+    }
+    setTimeout(() => {
+      if (this.isShowWX == true) {
+        this.loading = false;
+        this.isShowWX = true;
+      }
+    }, 5e3);
+  },
   // 分享至微信好友
   onShareAppMessage: function() {
     return {
@@ -132,7 +171,7 @@ const _sfc_main = {
       title: "锯妹-填写订单",
       // 朋友圈分享显示的标题
       path: "/pages/index/index",
-      imageUrl: Promise.resolve(require("../../static/logo.js")),
+      imageUrl: Promise.resolve(require("../../common/assets.js")).then((n) => n.logo),
       // 朋友圈分享时显示的图片
       success: function(res) {
         console.log("朋友圈分享成功:", res);
@@ -148,29 +187,46 @@ if (!Array) {
   _component_cityPicker();
 }
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
-  return {
-    a: $data.form.name,
-    b: common_vendor.o(($event) => $data.form.name = $event.detail.value),
-    c: $data.form.phone,
-    d: common_vendor.o(($event) => $data.form.phone = $event.detail.value),
-    e: $data.form.address,
-    f: common_vendor.o(($event) => $data.form.address = $event.detail.value),
-    g: common_vendor.o((...args) => $options.open && $options.open(...args)),
-    h: common_vendor.o($options.confirm),
-    i: common_vendor.o($options.cancel),
-    j: common_vendor.p({
+  return common_vendor.e({
+    a: $data.loading
+  }, $data.loading ? {
+    b: common_assets._imports_0
+  } : {}, {
+    c: $data.isShowWX && !$data.loading
+  }, $data.isShowWX && !$data.loading ? {
+    d: $data.form.name,
+    e: common_vendor.o(($event) => $data.form.name = $event.detail.value),
+    f: $data.form.amount,
+    g: common_vendor.o(($event) => $data.form.amount = $event.detail.value),
+    h: common_vendor.o((...args) => $options.onSubmit && $options.onSubmit(...args)),
+    i: common_vendor.o((...args) => $options.onSubmit && $options.onSubmit(...args))
+  } : {}, {
+    j: !$data.isShowWX && !$data.loading
+  }, !$data.isShowWX && !$data.loading ? {
+    k: $data.form.name,
+    l: common_vendor.o(($event) => $data.form.name = $event.detail.value),
+    m: $data.form.phone,
+    n: common_vendor.o(($event) => $data.form.phone = $event.detail.value),
+    o: $data.form.address,
+    p: common_vendor.o(($event) => $data.form.address = $event.detail.value),
+    q: common_vendor.o((...args) => $options.open && $options.open(...args)),
+    r: common_vendor.o($options.confirm),
+    s: common_vendor.o($options.cancel),
+    t: common_vendor.p({
       column: $data.column,
       ["default-value"]: $data.defaultValue,
       ["mask-close-able"]: $data.maskCloseAble,
       visible: $data.visible
     }),
-    k: $data.form.detailAddress,
-    l: common_vendor.o(($event) => $data.form.detailAddress = $event.detail.value),
-    m: $data.form.remark,
-    n: common_vendor.o(($event) => $data.form.remark = $event.detail.value),
-    o: common_vendor.o((...args) => $options.onSubmit && $options.onSubmit(...args)),
-    p: common_vendor.o((...args) => $options.onSubmit && $options.onSubmit(...args))
-  };
+    v: $data.form.detailAddress,
+    w: common_vendor.o(($event) => $data.form.detailAddress = $event.detail.value),
+    x: $data.form.amount,
+    y: common_vendor.o(($event) => $data.form.amount = $event.detail.value),
+    z: $data.form.remark,
+    A: common_vendor.o(($event) => $data.form.remark = $event.detail.value),
+    B: common_vendor.o((...args) => $options.onSubmit && $options.onSubmit(...args)),
+    C: common_vendor.o((...args) => $options.onSubmit && $options.onSubmit(...args))
+  } : {});
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-1cf27b2a"]]);
 _sfc_main.__runtimeHooks = 6;

@@ -3,14 +3,14 @@
   "projectname": "JM",
   "setting": {
     "compileHotReLoad": true,
-    "urlCheck": true
+    "urlCheck": false
   },
   "condition": {
     "miniprogram": {
       "list": [
         {
-          "name": "pages/admin/admin",
-          "pathName": "pages/admin/admin",
+          "name": "pages/index/index",
+          "pathName": "pages/index/index",
           "query": "",
           "launchMode": "default",
           "scene": null

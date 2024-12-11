@@ -1,12 +1,37 @@
 
+@keyframes spin-1cf27b2a {
+from {
+			transform: rotate(0deg);
+}
+to {
+			transform: rotate(360deg);
+}
+}
 .container.data-v-1cf27b2a {
 		padding: 40rpx;
+}
+.load-w.data-v-1cf27b2a {
+		display: flex;
+		flex-direction: column;
+		position: fixed;
+		left: calc(50vw - 60rpx);
+		top: 26vh;
+}
+.loading.data-v-1cf27b2a {
+		width: 120rpx;
+		height: 120rpx;
+		animation: spin-1cf27b2a 2s linear infinite;
+}
+.load-text.data-v-1cf27b2a {
+		font-size: 30rpx;
+		color: #333;
+		margin-top: 20rpx;
 }
 .form-item.data-v-1cf27b2a {
 		margin-bottom: 40rpx;
 }
 button.data-v-1cf27b2a {
-		background-color: #007AFF;
+		background-color: #63b166;
 		color: white;
 		padding: 20rpx;
 		border-radius: 10rpx;

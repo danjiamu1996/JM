@@ -1,4 +1,10 @@
-const BASE_URL = 'https://www.jumei.cyou'
+// let BASE_URL = 'http://127.0.0.1:3000'
+// if (process.env.NODE_ENV === 'development') {
+// 	BASE_URL = 'https://47.94.141.140'; // 开发环境
+// } else if (process.env.NODE_ENV === 'production') {
+// 	BASE_URL = 'https://www.jumei.cyou'; // 生产环境
+// }
+let BASE_URL = 'https://www.jumei.cyou'
 // 封装请求函数
 export const request = (options) => {
 	return new Promise((resolve, reject) => {
@@ -8,7 +14,6 @@ export const request = (options) => {
 			data: options.data || {}, // 支持动态传递请求体数据
 			header: options.header || {
 				'Content-Type': 'application/json',
-				'Authorization': 'Bearer JM888'
 			},
 			success: (res) => {
 				if (res.statusCode === 200) {
@@ -47,6 +52,15 @@ export const del = (url, data) => {
 	return request({
 		url: url,
 		method: 'DELETE',
+		data: data
+	});
+};
+
+// 封装 DELETE 请求
+export const put = (url, data) => {
+	return request({
+		url: url,
+		method: 'PUT',
 		data: data
 	});
 };

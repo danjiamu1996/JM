@@ -3,13 +3,13 @@
 		{
 			"path": "pages/index/index", // 用户提交页面
 			"style": {
-				"navigationBarTitleText": "收货信息填写" // 设置页面标题
+				"navigationBarTitleText": "信息填写" // 设置页面标题
 			}
 		},
 		{
 			"path": "pages/admin/admin", // 管理员查看数据页面
 			"style": {
-				"navigationBarTitleText": "发货信息统计" // 设置页面标题
+				"navigationBarTitleText": "信息统计" // 设置页面标题
 			}
 		},
 		{
@@ -25,5 +25,23 @@
 		"navigationBarBackgroundColor": "#F8F8F8",
 		"backgroundColor": "#F8F8F8"
 	},
-	"uniIdRouter": {}
+	"tabBar": {
+		"color": "#7A7E83",
+		"selectedColor": "#63b166",
+		"borderStyle": "black",
+		"backgroundColor": "#ffffff",
+		"list": [{
+				"pagePath": "pages/index/index",
+				"iconPath": "static/index.png",
+				"selectedIconPath": "static/index-s.png",
+				"text": "下单"
+			},
+			{
+				"pagePath": "pages/admin/admin",
+				"iconPath": "static/admin.png",
+				"selectedIconPath": "static/admin-s.png",
+				"text": "管理"
+			}
+		]
+	}
 }

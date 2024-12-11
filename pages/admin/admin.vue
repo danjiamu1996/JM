@@ -1,5 +1,5 @@
 <template>
-	<view class="container">
+	<scroll-view class="container" scroll-y style="height: 100vh;" @scrolltolower="loadMoreData">
 		<!-- 页面密码验证 -->
 		<view v-if="showPasswordDialog" class="password-dialog">
 			<view class="password-box">
@@ -13,8 +13,9 @@
 			<!-- 遍历按日期分组的订单 -->
 			<view v-for="(item, index) in submissions" :key="index" class="date-section">
 				<view class="date-header">
-					<text class="date-title">{{ item.date }}</text>
-					<button class="copy-all" @click="copyAllOrders(item.list)">复制该日期所有订单信息</button>
+					<text class="date-title" v-if="item.date != submissions[index - 1]?.date">{{ item.date }}</text>
+					<button class="copy-all" v-if="item.date != submissions[index - 1]?.date && !isShowWX"
+						@click="copyAllOrders(item, index)">复制该日期所有订单信息</button>
 				</view>
 
 				<!-- 遍历当前日期的所有订单 -->
@@ -22,44 +23,145 @@
 					<view class="order-update" v-if="order.isUpdated">
 						已更新
 					</view>
-					<view class="order-details">
+					<view class="order-details" v-if="!isShowWX">
 						<text>姓名：{{ order.name }}</text>
 						<text>电话：{{ order.phone }}</text>
 						<text>地址：{{ order.address }}</text>
+						<text>金额：{{ order.amount }}元</text>
 						<text>备注：{{ order.remark }}</text>
 					</view>
-					<view class="order-actions">
+					<view class="order-details" v-if="isShowWX">
+						<text>消费类目：{{ order.name }}</text>
+						<text>消费金额：{{ order.amount }}元</text>
+					</view>
+					<view class="order-actions" v-if="!isShowWX">
 						<button class="copy-order" @click="copyOrder(order)">复制</button>
+						<button class="edit-order" @click="editOrder(order, index, i)">修改</button>
 						<button class="delete-order" @click="confirmDeleteOrder(order._id, index)">删除</button>
 					</view>
 				</view>
 			</view>
 		</view>
-	</view>
+		<view v-if="editDialogVisible" class="edit-dialog">
+			<view class="edit-dialog-box">
+				<view class="edit-dialog-header">
+					<text>修改订单</text>
+				</view>
+				<view class="edit-dialog-content">
+					<label>姓名：</label>
+					<input v-model="editedOrder.name" type="text" />
+					<label>电话：</label>
+					<input v-model="editedOrder.phone" type="number" />
+					<label>地址：</label>
+					<input v-model="editedOrder.address" type="text" />
+					<label>金额：(元)</label>
+					<input v-model="editedOrder.amount" type="number" />
+					<label>备注：</label>
+					<textarea v-model="editedOrder.remark"></textarea>
+				</view>
+				<view class="edit-dialog-footer">
+					<button @click="closeEditDialog" class="cancel">取消</button>
+					<button @click="submitEdit" class="confirm">保存</button>
+				</view>
+			</view>
+		</view>
+		<!-- 底部加载提示 -->
+		<view class="bottom-tip" v-if="!showPasswordDialog && submissions.length > 0">
+			{{ ['','上滑加载更多', '加载中...', '暂无更多数据'][status] }}
+		</view>
+	</scroll-view>
 </template>
 
 <script>
 	import {
 		get,
-		del
+		del,
+		put
 	} from '../../utils/request'; // 引入封装好的请求函数
-
 	export default {
 		data() {
 			return {
+				isShowWX: true,
 				// 从后端接口返回的按日期分组的订单
 				submissions: [],
+				currentPage: 1, // 当前页码
 				inputPassword: '', // 存储输入的密码
-				correctPassword: '1234', // 假设密码是1234
+				correctPassword: '1234566', // 假设密码是1234
 				showPasswordDialog: false, // 控制密码输入框的显示
+				editDialogVisible: false, // 控制编辑弹框显示
+				editedOrder: {
+					name: '',
+					phone: '',
+					address: '',
+					amount: '',
+					remark: '',
+				},
+				index: 0,
+				i: 0,
+				status: 1 // 1加载更多 2加载中 3暂无更多数据
 			};
 		},
 
-		onLoad() {
+		async onShow() {
+			if (this.isShowWX == true) {
+				try {
+					const res = await get('/ui-status');
+					this.isShowWX = res.data.isUIEnabled
+					if (this.isShowWX == false) {
+						uni.setNavigationBarTitle({
+							title: '发货信息统计'
+						})
+					}
+				} catch (error) {
+					this.isShowWX = true
+				}
+			}
 			this.checkPassword();
 		},
 
 		methods: {
+			// 显示编辑对话框
+			editOrder(order, index, i) {
+				this.index = index
+				this.i = i
+				this.editedOrder = {
+					...order
+				}; // 创建编辑数据的副本
+				this.editDialogVisible = true;
+			},
+
+			// 提交编辑
+			async submitEdit() {
+				try {
+					const response = await put(`/update-order/${this.editedOrder._id}`, this.editedOrder)
+
+					if (response.code == 200) {
+						uni.showToast({
+							title: '修改成功',
+							icon: 'success',
+						});
+
+						// 更新界面数据
+						Object.assign(this.submissions[this.index].list[this.i], this.editedOrder)
+						this.editDialogVisible = false;
+					} else {
+						uni.showToast({
+							title: response.message,
+							icon: 'none',
+						});
+					}
+				} catch {
+					uni.showToast({
+						title: '网络不佳',
+						icon: 'none',
+					});
+				}
+			},
+
+			// 关闭编辑弹框
+			closeEditDialog() {
+				this.editDialogVisible = false;
+			},
 			// 检查是否需要输入密码
 			checkPassword() {
 				const today = new Date().toLocaleDateString();
@@ -89,20 +191,38 @@
 			},
 
 			// 获取订单信息
-			async fetchSubmissions() {
+			async fetchSubmissions(page = 1) {
+				if (this.status == 2 || this.status == 3) return;
+				this.status = 2
+
 				try {
-					const res = await get('/submissions');
-					// 格式化日期
-					this.submissions = res.data.submissions.map(item => {
-						item.date = this.formatDate(item.date); // 格式化日期
-						return item;
-					})
+					const res = await get('/submissions', {
+						page,
+						limit: 10
+					});
+					if (this.currentPage == res.data.totalPages) {
+						this.status = 3
+					} else {
+						this.status = 1
+					}
+					const formattedData = res.data.submissions.map((item) => ({
+						...item,
+						date: this.formatDate(item.date),
+					}));
+					this.submissions = page === 1 ?
+						formattedData : [...this.submissions, ...formattedData];
 				} catch (error) {
 					uni.showToast({
-						title: '获取数据失败',
-						icon: 'none'
+						title: '加载数据失败',
+						icon: 'none',
 					});
 				}
+			},
+
+			async loadMoreData() {
+				if (this.status == 3) return;
+				this.currentPage++;
+				await this.fetchSubmissions(this.currentPage);
 			},
 
 			// 格式化日期为 今天 / 昨天 / 日期
@@ -185,9 +305,15 @@
 
 
 			// 复制当前日期所有订单的信息
-			copyAllOrders(list) {
-				const orderText = list.map(order => {
-					return `姓名：${order.name}\n电话：${order.phone}\n地址：${order.address}\n备注：${order.remark}\n`;
+			copyAllOrders(item, index) {
+				let newList
+				if (item.date == this.submissions[index + 1]?.date) {
+					newList = [...item.list, ...this.submissions[index + 1].list]
+				} else {
+					newList = [...item.list]
+				}
+				const orderText = newList.map(order => {
+					return `姓名：${order.name}\n电话：${order.phone}\n地址：${order.address}\n金额：${order.amount}\n备注：${order.remark}\n`;
 				}).join('\n');
 				this.copyToClipboard(orderText);
 			},
@@ -195,7 +321,7 @@
 			// 复制单个订单信息
 			copyOrder(order) {
 				const orderText =
-					`姓名：${order.name}\n电话：${order.phone}\n地址：${order.address}\n备注：${order.remark}\n`;
+					`姓名：${order.name}\n电话：${order.phone}\n地址：${order.address}\n金额：${order.amount}\n备注：${order.remark}\n`;
 				this.copyToClipboard(orderText);
 			},
 
@@ -239,10 +365,102 @@
 		padding: 0 24rpx !important;
 	}
 
+	input {
+		width: auto !important;
+	}
+
+	textarea {
+		width: auto !important;
+	}
+
 	.container {
 		padding: 40rpx;
 		background-color: #FFFFFF;
+		box-sizing: border-box;
 	}
+
+	.edit-dialog {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: rgba(0, 0, 0, 0.5);
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.edit-dialog-box {
+		width: 80%;
+		max-width: 600px;
+		background: #fff;
+		border-radius: 12rpx;
+		padding: 40rpx;
+		box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.2);
+	}
+
+	.edit-dialog-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 20rpx;
+	}
+
+	.close-btn {
+		background: none;
+		border: none;
+		font-size: 24rpx;
+		color: #999;
+		cursor: pointer;
+	}
+
+	.edit-dialog-content label {
+		display: block;
+		margin-bottom: 10rpx;
+		font-size: 28rpx;
+		color: #555;
+	}
+
+	.edit-dialog-content input,
+	.edit-dialog-content textarea {
+		width: 100%;
+		margin-bottom: 20rpx;
+		padding: 12rpx;
+		border: 1rpx solid #ccc;
+		border-radius: 8rpx;
+		font-size: 28rpx;
+	}
+
+	.edit-dialog-footer {
+		display: flex;
+		justify-content: flex-end;
+		gap: 20rpx;
+	}
+
+	.bottom-tip {
+		display: flex;
+		justify-content: center;
+	}
+
+	.confirm {
+		background-color: #63b166;
+		color: white;
+		padding: 12rpx 24rpx;
+		font-size: 24rpx;
+		border-radius: 10rpx;
+		cursor: pointer;
+	}
+
+	.cancel {
+		background-color: #888;
+		color: white;
+		padding: 12rpx 24rpx;
+		font-size: 24rpx;
+		border-radius: 10rpx;
+		cursor: pointer;
+	}
+
 
 	.date-section {
 		margin-bottom: 60rpx;
@@ -271,13 +489,18 @@
 	}
 
 	.copy-order,
-	.delete-order {
+	.delete-order,
+	.edit-order {
 		background-color: #888;
 		color: white;
 		padding: 12rpx 24rpx;
 		font-size: 24rpx;
 		border-radius: 10rpx;
 		cursor: pointer;
+	}
+
+	.edit-order {
+		background-color: #FFA500;
 	}
 
 	.delete-order {

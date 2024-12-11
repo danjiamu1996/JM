@@ -1,6 +1,6 @@
 "use strict";
 const common_vendor = require("../common/vendor.js");
-const BASE_URL = "https://www.jumei.cyou";
+let BASE_URL = "https://www.jumei.cyou";
 const request = (options) => {
   return new Promise((resolve, reject) => {
     common_vendor.index.request({
@@ -11,8 +11,7 @@ const request = (options) => {
       data: options.data || {},
       // 支持动态传递请求体数据
       header: options.header || {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer JM888"
+        "Content-Type": "application/json"
       },
       success: (res) => {
         if (res.statusCode === 200) {
@@ -48,6 +47,14 @@ const del = (url, data) => {
     data
   });
 };
+const put = (url, data) => {
+  return request({
+    url,
+    method: "PUT",
+    data
+  });
+};
 exports.del = del;
 exports.get = get;
 exports.post = post;
+exports.put = put;

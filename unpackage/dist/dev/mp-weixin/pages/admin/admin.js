@@ -4,20 +4,86 @@ const utils_request = require("../../utils/request.js");
 const _sfc_main = {
   data() {
     return {
+      isShowWX: true,
       // 从后端接口返回的按日期分组的订单
       submissions: [],
+      currentPage: 1,
+      // 当前页码
       inputPassword: "",
       // 存储输入的密码
-      correctPassword: "1234",
+      correctPassword: "1234566",
       // 假设密码是1234
-      showPasswordDialog: false
+      showPasswordDialog: false,
       // 控制密码输入框的显示
+      editDialogVisible: false,
+      // 控制编辑弹框显示
+      editedOrder: {
+        name: "",
+        phone: "",
+        address: "",
+        amount: "",
+        remark: ""
+      },
+      index: 0,
+      i: 0,
+      status: 1
+      // 1加载更多 2加载中 3暂无更多数据
     };
   },
-  onLoad() {
+  async onShow() {
+    if (this.isShowWX == true) {
+      try {
+        const res = await utils_request.get("/ui-status");
+        this.isShowWX = res.data.isUIEnabled;
+        if (this.isShowWX == false) {
+          common_vendor.index.setNavigationBarTitle({
+            title: "发货信息统计"
+          });
+        }
+      } catch (error) {
+        this.isShowWX = true;
+      }
+    }
     this.checkPassword();
   },
   methods: {
+    // 显示编辑对话框
+    editOrder(order, index, i) {
+      this.index = index;
+      this.i = i;
+      this.editedOrder = {
+        ...order
+      };
+      this.editDialogVisible = true;
+    },
+    // 提交编辑
+    async submitEdit() {
+      try {
+        const response = await utils_request.put(`/update-order/${this.editedOrder._id}`, this.editedOrder);
+        if (response.code == 200) {
+          common_vendor.index.showToast({
+            title: "修改成功",
+            icon: "success"
+          });
+          Object.assign(this.submissions[this.index].list[this.i], this.editedOrder);
+          this.editDialogVisible = false;
+        } else {
+          common_vendor.index.showToast({
+            title: response.message,
+            icon: "none"
+          });
+        }
+      } catch {
+        common_vendor.index.showToast({
+          title: "网络不佳",
+          icon: "none"
+        });
+      }
+    },
+    // 关闭编辑弹框
+    closeEditDialog() {
+      this.editDialogVisible = false;
+    },
     // 检查是否需要输入密码
     checkPassword() {
       const today = (/* @__PURE__ */ new Date()).toLocaleDateString();
@@ -42,19 +108,37 @@ const _sfc_main = {
       }
     },
     // 获取订单信息
-    async fetchSubmissions() {
+    async fetchSubmissions(page = 1) {
+      if (this.status == 2 || this.status == 3)
+        return;
+      this.status = 2;
       try {
-        const res = await utils_request.get("/submissions");
-        this.submissions = res.data.submissions.map((item) => {
-          item.date = this.formatDate(item.date);
-          return item;
+        const res = await utils_request.get("/submissions", {
+          page,
+          limit: 10
         });
+        if (this.currentPage == res.data.totalPages) {
+          this.status = 3;
+        } else {
+          this.status = 1;
+        }
+        const formattedData = res.data.submissions.map((item) => ({
+          ...item,
+          date: this.formatDate(item.date)
+        }));
+        this.submissions = page === 1 ? formattedData : [...this.submissions, ...formattedData];
       } catch (error) {
         common_vendor.index.showToast({
-          title: "获取数据失败",
+          title: "加载数据失败",
           icon: "none"
         });
       }
+    },
+    async loadMoreData() {
+      if (this.status == 3)
+        return;
+      this.currentPage++;
+      await this.fetchSubmissions(this.currentPage);
     },
     // 格式化日期为 今天 / 昨天 / 日期
     formatDate(date) {
@@ -122,11 +206,19 @@ const _sfc_main = {
       });
     },
     // 复制当前日期所有订单的信息
-    copyAllOrders(list) {
-      const orderText = list.map((order) => {
+    copyAllOrders(item, index) {
+      var _a;
+      let newList;
+      if (item.date == ((_a = this.submissions[index + 1]) == null ? void 0 : _a.date)) {
+        newList = [...item.list, ...this.submissions[index + 1].list];
+      } else {
+        newList = [...item.list];
+      }
+      const orderText = newList.map((order) => {
         return `姓名：${order.name}
 电话：${order.phone}
 地址：${order.address}
+金额：${order.amount}
 备注：${order.remark}
 `;
       }).join("\n");
@@ -137,6 +229,7 @@ const _sfc_main = {
       const orderText = `姓名：${order.name}
 电话：${order.phone}
 地址：${order.address}
+金额：${order.amount}
 备注：${order.remark}
 `;
       this.copyToClipboard(orderText);
@@ -187,26 +280,64 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     e: !$data.showPasswordDialog
   }, !$data.showPasswordDialog ? {
     f: common_vendor.f($data.submissions, (item, index, i0) => {
-      return {
-        a: common_vendor.t(item.date),
-        b: common_vendor.o(($event) => $options.copyAllOrders(item.list), index),
-        c: common_vendor.f(item.list, (order, i, i1) => {
+      var _a, _b, _c, _d;
+      return common_vendor.e({
+        a: item.date != ((_a = $data.submissions[index - 1]) == null ? void 0 : _a.date)
+      }, item.date != ((_b = $data.submissions[index - 1]) == null ? void 0 : _b.date) ? {
+        b: common_vendor.t(item.date)
+      } : {}, {
+        c: item.date != ((_c = $data.submissions[index - 1]) == null ? void 0 : _c.date) && !$data.isShowWX
+      }, item.date != ((_d = $data.submissions[index - 1]) == null ? void 0 : _d.date) && !$data.isShowWX ? {
+        d: common_vendor.o(($event) => $options.copyAllOrders(item, index), index)
+      } : {}, {
+        e: common_vendor.f(item.list, (order, i, i1) => {
           return common_vendor.e({
             a: order.isUpdated
-          }, order.isUpdated ? {} : {}, {
+          }, order.isUpdated ? {} : {}, !$data.isShowWX ? {
             b: common_vendor.t(order.name),
             c: common_vendor.t(order.phone),
             d: common_vendor.t(order.address),
-            e: common_vendor.t(order.remark),
-            f: common_vendor.o(($event) => $options.copyOrder(order), order._id),
-            g: common_vendor.o(($event) => $options.confirmDeleteOrder(order._id, index), order._id),
-            h: order._id
+            e: common_vendor.t(order.amount),
+            f: common_vendor.t(order.remark)
+          } : {}, $data.isShowWX ? {
+            g: common_vendor.t(order.name),
+            h: common_vendor.t(order.amount)
+          } : {}, !$data.isShowWX ? {
+            i: common_vendor.o(($event) => $options.copyOrder(order), order._id),
+            j: common_vendor.o(($event) => $options.editOrder(order, index, i), order._id),
+            k: common_vendor.o(($event) => $options.confirmDeleteOrder(order._id, index), order._id)
+          } : {}, {
+            l: order._id
           });
         }),
-        d: index
-      };
-    })
-  } : {});
+        f: index
+      });
+    }),
+    g: !$data.isShowWX,
+    h: $data.isShowWX,
+    i: !$data.isShowWX
+  } : {}, {
+    j: $data.editDialogVisible
+  }, $data.editDialogVisible ? {
+    k: $data.editedOrder.name,
+    l: common_vendor.o(($event) => $data.editedOrder.name = $event.detail.value),
+    m: $data.editedOrder.phone,
+    n: common_vendor.o(($event) => $data.editedOrder.phone = $event.detail.value),
+    o: $data.editedOrder.address,
+    p: common_vendor.o(($event) => $data.editedOrder.address = $event.detail.value),
+    q: $data.editedOrder.amount,
+    r: common_vendor.o(($event) => $data.editedOrder.amount = $event.detail.value),
+    s: $data.editedOrder.remark,
+    t: common_vendor.o(($event) => $data.editedOrder.remark = $event.detail.value),
+    v: common_vendor.o((...args) => $options.closeEditDialog && $options.closeEditDialog(...args)),
+    w: common_vendor.o((...args) => $options.submitEdit && $options.submitEdit(...args))
+  } : {}, {
+    x: !$data.showPasswordDialog && $data.submissions.length > 0
+  }, !$data.showPasswordDialog && $data.submissions.length > 0 ? {
+    y: common_vendor.t(["", "上滑加载更多", "加载中...", "暂无更多数据"][$data.status])
+  } : {}, {
+    z: common_vendor.o((...args) => $options.loadMoreData && $options.loadMoreData(...args))
+  });
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-dbc77958"]]);
 _sfc_main.__runtimeHooks = 2;

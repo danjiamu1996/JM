@@ -10,5 +10,25 @@
     "navigationBarBackgroundColor": "#F8F8F8",
     "backgroundColor": "#F8F8F8"
   },
+  "tabBar": {
+    "color": "#7A7E83",
+    "selectedColor": "#63b166",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "iconPath": "static/index.png",
+        "selectedIconPath": "static/index-s.png",
+        "text": "下单"
+      },
+      {
+        "pagePath": "pages/admin/admin",
+        "iconPath": "static/admin.png",
+        "selectedIconPath": "static/admin-s.png",
+        "text": "管理"
+      }
+    ]
+  },
   "usingComponents": {}
 }
