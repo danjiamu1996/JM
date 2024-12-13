@@ -31,6 +31,8 @@ const _sfc_main = {
     };
   },
   async onShow() {
+    this.status = 1;
+    this.page = 1;
     if (this.isShowWX == true) {
       try {
         const res = await utils_request.get("/ui-status");
